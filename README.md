@@ -1,3 +1,5 @@
+![Logo do Projeto](.github/BananaPay.webp)
+
 # BananaPay - Sistema de Pagamentos via PIX
 
 BananaPay é uma solução moderna e segura para pagamentos instantâneos via PIX. O projeto foi desenhado com foco em escalabilidade, boas práticas de engenharia de software e arquitetura limpa. A aplicação permite a leitura de QR Codes, envio e recebimento de valores via PIX, gerenciamento de contatos, agendamentos e pagamentos recorrentes.
