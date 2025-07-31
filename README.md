@@ -38,8 +38,6 @@ O backend segue os princípios da Arquitetura Limpa com separação em:
 - `interface/` - Rotas, controllers e validadores
 - `shared/` - Tipagens, helpers, erros globais
 
-Mais detalhes estão em [`design.md`](./design.md).
-
 ---
 
 ## 🎨 Instalação e Execução
