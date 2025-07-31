@@ -24,7 +24,7 @@ BananaPay é uma solução moderna e segura para pagamentos instantâneos via PI
 | ORM            | Prisma ORM                      |
 | Banco de Dados | SQLite (dev), PostgreSQL (prod) |
 | Validação      | Zod                             |
-| Testes         | Jest, Supertest                 |
+| Testes         | Jest                            |
 
 ---
 
