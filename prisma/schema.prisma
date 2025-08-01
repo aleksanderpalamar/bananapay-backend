@@ -1,0 +1,77 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  cpf       String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relacionamentos
+  contacts    Contact[]
+  transactions Transaction[]
+
+  @@map("users")
+}
+
+model Contact {
+  id     String @id @default(cuid())
+  userId String
+  name   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relacionamentos
+  user     User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  pixKeys  PixKey[]
+
+  @@unique([userId, name])
+  @@map("contacts")
+}
+
+model PixKey {
+  id        String   @id @default(cuid())
+  contactId String
+  key       String
+  keyType   String   // CPF, EMAIL, PHONE, RANDOM
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relacionamentos
+  contact Contact @relation(fields: [contactId], references: [id], onDelete: Cascade)
+
+  @@unique([contactId, keyType])
+  @@map("pix_keys")
+}
+
+model Transaction {
+  id              String    @id @default(cuid())
+  userId          String
+  amount          Float
+  description     String
+  pixKey          String
+  pixKeyType      String    // CPF, EMAIL, PHONE, RANDOM
+  status          String    // PENDING, EXECUTED, FAILED, CANCELLED, SCHEDULED
+  transactionType String    // IMMEDIATE, SCHEDULED, AUTOMATIC
+  scheduledDate   DateTime?
+  executedAt      DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Relacionamentos
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("transactions")
+} 

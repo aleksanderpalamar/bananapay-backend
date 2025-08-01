@@ -3,3 +3,11 @@
 /.env
 /docs
 GEMINI.md
+.cursor/
+.cursorignore
+/prisma/migrations
+/prisma/dev.db
+/.vscode
+/.DS_Store
+/.idea
+/logs/*.log
