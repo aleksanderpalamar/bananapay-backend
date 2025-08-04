@@ -36,6 +36,7 @@ import { TransactionController } from "./interface/controllers/TransactionContro
 import { createUserRoutes } from "./interface/routes/userRoutes";
 import { createContactRoutes } from "./interface/routes/contactRoutes";
 import { createTransactionRoutes } from "./interface/routes/transactionRoutes";
+import { swaggerDocument } from "./config/swagger";
 
 /**
  * Configuração do servidor Express
@@ -60,48 +61,6 @@ app.use(rateLimiter);
 /**
  * Configuração do Swagger
  */
-const swaggerDocument = {
-  openapi: "3.0.0",
-  info: {
-    title: "BananaPay API",
-    version: "1.0.0",
-    description: "API para sistema de pagamentos via PIX",
-  },
-  servers: [
-    {
-      url: `http://localhost:${PORT}/api/v1`,
-      description: "Servidor de desenvolvimento",
-    },
-  ],
-  paths: {
-    "/users": {
-      post: {
-        summary: "Criar usuário",
-        requestBody: {
-          required: true,
-          content: {
-            "application/json": {
-              schema: {
-                type: "object",
-                properties: {
-                  name: { type: "string" },
-                  email: { type: "string" },
-                  cpf: { type: "string" },
-                },
-                required: ["name", "email", "cpf"],
-              },
-            },
-          },
-        },
-        responses: {
-          "201": {
-            description: "Usuário criado com sucesso",
-          },
-        },
-      },
-    },
-  },
-};
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
