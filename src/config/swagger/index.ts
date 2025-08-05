@@ -5,7 +5,7 @@ export const swaggerDocument = {
   info: {
     title: "BananaPay API",
     version: "1.0.0",
-    description: "API para sistema de pagamentos via PIX",
+    description: "Documentação da API BananaPay - Sistema de Pagamentos",
   },
   servers: [
     {

@@ -2,7 +2,7 @@
 
 <img src=".github/BananaPay.webp" alt="Logo do Projeto" width="400" />
 
-Sistema de pagamentos via PIX desenvolvido com Node.js, TypeScript e Clean Architecture.
+Sistema de pagamentos via PIX desenvolvido com Node.js, TypeScript.
 
 ## 🚀 Tecnologias
 
