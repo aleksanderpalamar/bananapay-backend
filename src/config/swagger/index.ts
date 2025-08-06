@@ -358,5 +358,214 @@ export const swaggerDocument = {
         },
       },
     },
+    "/pix/charges": {
+      post: {
+        tags: ["Pix"],
+        summary: "Criar cobrança Pix",
+        description:
+          "Cria uma nova cobrança Pix através da API do Banco do Brasil",
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                properties: {
+                  value: {
+                    type: "number",
+                    minimum: 0.01,
+                    maximum: 1000000,
+                    example: 150.5,
+                    description: "Valor da cobrança em reais",
+                  },
+                  payerName: {
+                    type: "string",
+                    minLength: 2,
+                    maxLength: 100,
+                    example: "João Silva",
+                    description: "Nome completo do pagador",
+                  },
+                  payerCpf: {
+                    type: "string",
+                    pattern: "^\\d{3}\\.?\\d{3}\\.?\\d{3}-?\\d{2}$",
+                    example: "123.456.789-00",
+                    description: "CPF do pagador (com ou sem formatação)",
+                  },
+                  payerEmail: {
+                    type: "string",
+                    format: "email",
+                    example: "joao@email.com",
+                    description: "Email do pagador",
+                  },
+                  description: {
+                    type: "string",
+                    minLength: 1,
+                    maxLength: 200,
+                    example: "Pagamento de produto",
+                    description: "Descrição da cobrança",
+                  },
+                  expirationMinutes: {
+                    type: "number",
+                    minimum: 1,
+                    maximum: 43200,
+                    example: 60,
+                    description:
+                      "Tempo de expiração em minutos (padrão: 60, máximo: 30 dias)",
+                  },
+                },
+                required: [
+                  "value",
+                  "payerName",
+                  "payerCpf",
+                  "payerEmail",
+                  "description",
+                ],
+              },
+            },
+          },
+        },
+        responses: {
+          "201": {
+            description: "Cobrança Pix criada com sucesso",
+            content: {
+              "application/json": {
+                schema: {
+                  $ref: "#/components/schemas/ApiResponse",
+                },
+              },
+            },
+          },
+          "400": {
+            description: "Dados inválidos",
+          },
+          "401": {
+            description: "Erro de autenticação com a API Pix",
+          },
+          "502": {
+            description: "Erro na integração com a API Pix",
+          },
+        },
+      },
+      get: {
+        tags: ["Pix"],
+        summary: "Listar cobranças Pix por status",
+        parameters: [
+          {
+            name: "status",
+            in: "query",
+            required: true,
+            schema: {
+              type: "string",
+              enum: [
+                "ATIVA",
+                "CONCLUIDA",
+                "REMOVIDA_PELO_USUARIO_RECEBEDOR",
+                "REMOVIDA_PELO_PSP",
+                "EXPIRADA",
+              ],
+            },
+            example: "ATIVA",
+          },
+        ],
+        responses: {
+          "200": {
+            description: "Lista de cobranças Pix encontradas",
+          },
+        },
+      },
+    },
+    "/pix/charges/{txid}": {
+      get: {
+        tags: ["Pix"],
+        summary: "Consultar cobrança Pix",
+        parameters: [
+          {
+            name: "txid",
+            in: "path",
+            required: true,
+            schema: {
+              type: "string",
+            },
+            example: "TXID123456",
+          },
+        ],
+        responses: {
+          "200": {
+            description: "Cobrança Pix encontrada com sucesso",
+          },
+          "404": {
+            description: "Cobrança Pix não encontrada",
+          },
+        },
+      },
+      delete: {
+        tags: ["Pix"],
+        summary: "Cancelar cobrança Pix",
+        parameters: [
+          {
+            name: "txid",
+            in: "path",
+            required: true,
+            schema: {
+              type: "string",
+            },
+            example: "TXID123456",
+          },
+        ],
+        responses: {
+          "200": {
+            description: "Cobrança Pix cancelada com sucesso",
+          },
+          "404": {
+            description: "Cobrança Pix não encontrada",
+          },
+        },
+      },
+    },
   },
+  components: {
+    schemas: {
+      PixCharge: {
+        type: "object",
+        properties: {
+          id: { type: "string" },
+          txid: { type: "string" },
+          locationUrl: { type: "string" },
+          status: {
+            type: "string",
+            enum: [
+              "ATIVA",
+              "CONCLUIDA",
+              "REMOVIDA_PELO_USUARIO_RECEBEDOR",
+              "REMOVIDA_PELO_PSP",
+              "EXPIRADA",
+            ],
+          },
+          value: { type: "number" },
+          payerName: { type: "string" },
+          payerCpf: { type: "string" },
+          payerEmail: { type: "string" },
+          description: { type: "string" },
+          expiresAt: { type: "string", format: "date-time" },
+          createdAt: { type: "string", format: "date-time" },
+          updatedAt: { type: "string", format: "date-time" },
+        },
+      },
+      ApiResponse: {
+        type: "object",
+        properties: {
+          success: { type: "boolean" },
+          message: { type: "string" },
+          data: { type: "object" },
+          error: { type: "string" },
+        },
+      },
+    },
+  },
+  tags: [
+    {
+      name: "Pix",
+      description: "Operações relacionadas a cobranças Pix via Banco do Brasil",
+    },
+  ],
 };
