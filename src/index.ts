@@ -26,16 +26,22 @@ import { PrismaTransactionRepository } from "./infrastructure/database/PrismaTra
 import { CreateUserUseCase } from "./application/use-cases/CreateUserUseCase";
 import { CreateContactUseCase } from "./application/use-cases/CreateContactUseCase";
 import { CreateTransactionUseCase } from "./application/use-cases/CreateTransactionUseCase";
+import { CreatePixChargeUseCase } from "./application/use-cases/CreatePixChargeUseCase";
+
+// Importações dos serviços
+import { BancoDoBrasilPixService } from "./infrastructure/services/BancoDoBrasilPixService";
 
 // Importações dos controllers
 import { UserController } from "./interface/controllers/UserController";
 import { ContactController } from "./interface/controllers/ContactController";
 import { TransactionController } from "./interface/controllers/TransactionController";
+import { PixController } from "./interface/controllers/PixController";
 
 // Importações das rotas
 import { createUserRoutes } from "./interface/routes/userRoutes";
 import { createContactRoutes } from "./interface/routes/contactRoutes";
 import { createTransactionRoutes } from "./interface/routes/transactionRoutes";
+import { createPixRoutes } from "./interface/routes/pixRoutes";
 import { swaggerDocument } from "./config/swagger";
 
 /**
@@ -85,6 +91,9 @@ const userRepository = new PrismaUserRepository(prisma);
 const contactRepository = new PrismaContactRepository(prisma);
 const transactionRepository = new PrismaTransactionRepository(prisma);
 
+// Serviços
+const pixService = new BancoDoBrasilPixService();
+
 // Casos de uso
 const createUserUseCase = new CreateUserUseCase(userRepository);
 const createContactUseCase = new CreateContactUseCase(
@@ -95,6 +104,7 @@ const createTransactionUseCase = new CreateTransactionUseCase(
   transactionRepository,
   userRepository
 );
+const createPixChargeUseCase = new CreatePixChargeUseCase(pixService);
 
 // Controllers
 const userController = new UserController(createUserUseCase);
@@ -102,6 +112,7 @@ const contactController = new ContactController(createContactUseCase);
 const transactionController = new TransactionController(
   createTransactionUseCase
 );
+const pixController = new PixController(createPixChargeUseCase, pixService);
 
 /**
  * Configuração das rotas da API
@@ -109,6 +120,7 @@ const transactionController = new TransactionController(
 app.use("/api/v1/users", createUserRoutes(userController));
 app.use("/api/v1/contacts", createContactRoutes(contactController));
 app.use("/api/v1/transactions", createTransactionRoutes(transactionController));
+app.use("/api/v1/pix", createPixRoutes(pixController));
 
 /**
  * Middleware de tratamento de erros
